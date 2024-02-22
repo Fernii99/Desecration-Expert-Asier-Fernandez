@@ -138,7 +138,7 @@ async function BattleDevelopment(superheroes){
             case 7:
             case 8:
             case 9:
-                console.log("EL ERUDITO HA ENTRADO AL CAMPO DE BATALLA Y DESATA EL CAOS, CAMBIO DE TURNO")
+                console.log("EL ERUDITO HA ENTRADO AL CAMPO DE BATALLA Y DESATA EL CAOS!! CAMBIO DE TURNO")
                 turn = turn === 'superhero' ? 'junkpile' : 'superhero';
             break;
             case 10:
