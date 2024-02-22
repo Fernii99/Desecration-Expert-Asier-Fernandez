@@ -11,7 +11,6 @@ async function StartGame(){
        Retrieve all superheroes
     ********************************************/
         const superheroes = await gameService.getHeroData();
-
     /*******************************************
        Find junkpile information 
     ********************************************/
