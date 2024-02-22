@@ -21,7 +21,9 @@ async function GenerateJunkpile(superheroes) {
         SPE: junkpileData.powerstats.speed,
         POW: junkpileData.powerstats.power,
         COM: junkpileData.powerstats.combat,
-        HP: hitpoints
+        HP: hitpoints,
+        leftArm: false,
+        rightArm: false,
     };
     return junkpile;
 }
@@ -50,7 +52,9 @@ function GenerateSuperhero(superheroes){
             SPE: superheroData.powerstats.speed,
             POW: superheroData.powerstats.power,
             COM: superheroData.powerstats.combat,
-            HP: hitpoints
+            HP: hitpoints,
+            leftArm: false,
+            rightArm: false,
         };
         return superhero;
     }else{
@@ -62,12 +66,15 @@ function GenerateSuperhero(superheroes){
 FUNCTION THAT SETS THE DATA FOR THE ERUDITO 
 ***************************************************/
 function GenerateErudito() {
-    const  hp = Math.floor(Math.random() * 20 - 1) + 1
+    const hp = Math.floor(Math.random() * 20 - 1) + 1
     const erudito = {
         name: "El Erudito X.G.",
         ANG: 0,
         HPW: 1 + hp,
-        HPG: "Invincible"
+        HPG: "Invincible",
+        leftArm: false,
+        rightArm: false,
+        glases: true
     }
 
     return erudito

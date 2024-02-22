@@ -36,11 +36,13 @@ async function StartGame(){
 ********************************************/
 async function BattleDevelopment(superheroes){
 
-    let EruditoSpawn = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
-
     let junkpile = superheroes[0];
     let superhero = superheroes[1];
+
+    let EruditoSpawn = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
     let erudito = superheroes[2];
+    erudito.glases = true;
+    
 
     let turn = await Battle.Start(junkpile, superhero);
     console.log("--------------------------------");
@@ -48,26 +50,138 @@ async function BattleDevelopment(superheroes){
 
     let AssaultTurn = 1;
 
-    /*******************************************
-                LOOP OF THE BATTLE
-    *******************************************/
-   while( junkpile.HP >= 0 && superhero.HP >= 0 ){
-    /************************************************
-        IF IS TURN OF THE ERUDITE TO ENTER THE FIELD
-    ************************************************/
-    if(AssaultTurn === EruditoSpawn){
+    /** LOOP OF THE BATTLE **/
+   while( junkpile.HP >= 0 && superhero.HP > 0 ){
 
+    /*** IF IS TURN OF THE ERUDITE TO ENTER THE FIELD ***/
+    if(AssaultTurn === EruditoSpawn && erudito.HPW > 0){
+
+        //ERUDITE ENTERS THE ARENA MESSAGES 
         console.log("----------------------------------")
         console.log("Asalto numero " +  AssaultTurn)
         console.log("-------------------------------------------------------")
         console.log("-- EL ERUDITO HA APARECIDO EN EL CAMPO DE BATALLA -----")
         console.log("-------------------------------------------------------")
 
-        erudito.ANG = EruditeActions.calculateAnger();
+        //CALCULATE THE ANGER OF THE ERUDITE
+        erudito.ANG = 1 + DiceThrow(13);
+        erudito.glases = !erudito.glases;
 
-        console.log(erudito);
+        console.log("ANGRY DEL ERUDITO" + erudito.ANG);
+        
+        switch(erudito.ANG) {
+            case 1:
+            case 2:
+            case 3:
+                attacker = turn == 'superhero' ? superhero : junkpile;
+                if(!attacker.leftArm){
+                    const damage = DiceThrow(20);           
+                    if(turn === 'superhero' ) {
+                        superhero.leftArm = true;
+                        superhero.STR = Math.floor(superhero.STR / 2);
+                        superhero.HP = superhero.HP - damage;
+                        console.log(superhero);
+                        console.log(`PIFIA! ${attacker.name} se ha roto el brazo izquierdo y sus estadisticas han bajado! Fuerza: -${Math.floor(superhero.STR / 2)} Y Vida -${damage} `)
+                    }else{
+                        junkpile.leftArm = true 
+                        junkpile.STR = Math.floor(junkpile.STR / 2);
+                        junkpile.HP =  junkpile.HP - damage
+                        console.log(`PIFIA! ${attacker.name} se ha roto el brazo izquierdo y sus estadisticas han bajado! Fuerza: -${Math.floor(junkpile.STR / 2)} Y Vida -${damage} `)
+                        console.log(junkpile);
+                    }   
+                }else{
+                    const damage = DiceThrow(20);           
+                    if(turn === 'superhero' ) {
+                        superhero.HP = superhero.HP - damage
+                        console.log(`PIFIA! ${attacker.name} tiene el brazo roto y su vida ha bajado!  Vida -${damage} `)
+                        console.log(superhero);
 
+                    }else{
+                        junkpile.HP = junkpile.HP - damage
+                        console.log(`PIFIA! ${attacker.name} tiene el brazo roto y su vida ha bajado!  Vida -${damage} `)
+                        console.log(junkpile);
 
+                    } 
+                }
+
+                break;
+            case 4:
+            case 5:
+            case 6:
+                attacker = turn == 'superhero' ? superhero : junkpile;
+                if(!attacker.leftArm){
+                    const damage = DiceThrow(20);
+                    if(turn === 'superhero' ) {
+                        superhero.leftArm = true;
+                        superhero.STR = Math.floor(superhero.STR / 2);
+                        superhero.HP = superhero.HP - damage;
+                        console.log(superhero)
+                        console.log(`PIFIA! ${attacker.name} se ha roto el brazo Derecho y sus estadisticas han bajado! Fuerza: -${Math.floor(superhero.STR / 2)} Y Vida -${damage}`)
+                    }else{
+                        junkpile.leftArm = true 
+                        junkpile.STR = Math.floor(junkpile.STR / 2);
+                        junkpile.HP =  junkpile.HP - damage
+                        console.log(`PIFIA! ${attacker.name} se ha roto el brazo Derecho y sus estadisticas han bajado! Fuerza: -${Math.floor(junkpile.STR / 2)} Y Vida -${damage}`)
+                        console.log(junkpile);
+                    }
+                }else{
+                    const damage = DiceThrow(20);           
+                    if(turn === 'superhero' ) {
+                        superhero.HP = superhero.HP - damage
+                        console.log(`PIFIA! ${attacker.name} tiene el brazo roto y su vida ha bajado!  Vida -${damage}`)
+                        console.log(superhero);
+
+                    }else{
+                        junkpile.HP = junkpile.HP - damage
+                        console.log(`PIFIA! ${attacker.name} tiene el brazo roto y su vida ha bajado!  Vida -${damage}`)
+                        console.log(junkpile);
+                    } 
+                }
+            break;
+            case 7:
+            case 8:
+            case 9:
+                console.log("EL ERUDITO HA ENTRADO AL CAMPO DE BATALLA Y DESATA EL CAOS, CAMBIO DE TURNO")
+                turn = turn === 'superhero' ? 'junkpile' : 'superhero';
+            break;
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+                attacker = turn == 'superhero' ? superhero : junkpile;
+                if(!attacker.leftArm){
+                    const damage = DiceThrow(10);
+                    if(turn === 'superhero' ){
+                        console.log(superhero)
+                        console.log(`${superhero.name} ha escuchado el grito del erudito y le ha golpedo! El erudito ha recibido un total de: ${damage}`);
+                        console.log("Vida actual del erudito:");
+                        console.log(erudito);
+                    }else{
+                        console.log(`${superhero.name} ha escuchado el grito del erudito y le ha golpedo! El erudito ha recibido un total de: ${damage} `);
+                        console.log("Vida actual del erudito:");
+                        console.log(erudito);
+                    }
+                }
+            break;
+            case 14:
+            case 15:
+            case 16:
+            // Acción para el caso 4
+            console.log("LA OPCION CHUNGA");
+            break;
+            case 17:
+            case 18:
+                // Acción para el caso 4
+            console.log("17-18");
+            break;
+            case 19:
+            case 20:   
+            // Acción para el caso 4
+            console.log("19-20");
+            break;                      
+            case defaul:
+                console.log("DEFAULT AQUI MI REY")
+        }
 
         //CALCULATE THE NEXT TIME THE ERUDITE IS GOING TO APEAR ON THE FIELD
         EruditoSpawn = AssaultTurn + Math.floor(Math.random() * (5 - 3 + 1)) + 3 ;
@@ -127,6 +241,9 @@ function EndGame(fighters){
         
 }
 
+const DiceThrow = (max) => {
+    return Math.floor(Math.random()* max - 1) + 1;
+}
 module.exports = {
     StartGame,
     BattleDevelopment,
