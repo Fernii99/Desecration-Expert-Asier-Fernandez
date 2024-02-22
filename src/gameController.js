@@ -64,10 +64,9 @@ async function BattleDevelopment(superheroes){
         console.log("-------------------------------------------------------")
 
         //CALCULATE THE ANGER OF THE ERUDITE
-        erudito.ANG = 1 + DiceThrow(13);
+        erudito.ANG = 1 + DiceThrow(20);
         erudito.glases = !erudito.glases;
 
-        console.log("ANGRY DEL ERUDITO" + erudito.ANG);
         
         switch(erudito.ANG) {
             case 1:
@@ -100,10 +99,8 @@ async function BattleDevelopment(superheroes){
                         junkpile.HP = junkpile.HP - damage
                         console.log(`PIFIA! ${attacker.name} tiene el brazo roto y su vida ha bajado!  Vida -${damage} `)
                         console.log(junkpile);
-
                     } 
                 }
-
                 break;
             case 4:
             case 5:
@@ -166,21 +163,21 @@ async function BattleDevelopment(superheroes){
             case 14:
             case 15:
             case 16:
-            // Acción para el caso 4
-            console.log("LA OPCION CHUNGA");
+                // No se sacar adelante esta opcion
+                console.log(" La tirada de dados ha sido entre 14 y 16 ");
             break;
             case 17:
             case 18:
-                // Acción para el caso 4
-            console.log("17-18");
-            break;
+                console.log("El erudito al grito de tu eres tonto recupera sus gafas");
+                break;
             case 19:
             case 20:   
-            // Acción para el caso 4
-            console.log("19-20");
+                attacker = turn == 'superhero' ? superhero : junkpile;
+                console.log(`ENDEMONIADO, ${attacker.name} desata todo el caos del rerudito persiguiendole y cortandole la cabeza`);
+                erudito.HPW = 0;
             break;                      
-            case defaul:
-                console.log("DEFAULT AQUI MI REY")
+            default:
+                break;
         }
 
         //CALCULATE THE NEXT TIME THE ERUDITE IS GOING TO APEAR ON THE FIELD
