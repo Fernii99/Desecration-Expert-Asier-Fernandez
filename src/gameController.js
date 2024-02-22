@@ -1,6 +1,7 @@
 const gameService = require('./gameService');
 const Battle = require('./Battle');
-const { Superhero } = require('./Superhero'); //Class superheroes
+const RetrieveFighters = require('./Fighters');
+const EruditeActions = require('./eruditeActions')
 
 /*
 FUNCTION THAT STARTS THE GAME, RETRIEVES THE INFORMATION AND SETS THE 2 BATTLE SUPERHEROES DATA
@@ -14,17 +15,17 @@ async function StartGame(){
     /*******************************************
        Find junkpile information 
     ********************************************/
-        const junkpile = RetrieveJunkpile(superheroes)
-
+        const junkpile = await RetrieveFighters.GenerateJunkpile(superheroes)
     /*******************************************
        Find a superhero data to fight Junkpile 
     *******************************************/
-        const superhero = RetrieveSuperhero(superheroes)
-    
-        console.log(`Hoy combatiran ${junkpile.name} contra ${superhero.name}`)
-        console.log(`---------------------------------------`)
+       const superhero = await RetrieveFighters.GenerateSuperhero(superheroes)
+    /*******************************************
+       Prepare Erudito data 
+    *******************************************/
+       const erudito = await RetrieveFighters.GenerateErudito(superheroes)
 
-    return {junkpile, superhero}
+    return [junkpile, superhero, erudito]
 }
 
 
@@ -36,8 +37,11 @@ async function StartGame(){
 ********************************************/
 async function BattleDevelopment(superheroes){
 
-    let junkpile = superheroes.junkpile;
-    let superhero = superheroes.superhero;
+    let EruditoSpawn = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
+
+    let junkpile = superheroes[0];
+    let superhero = superheroes[1];
+    let erudito = superheroes[2];
 
     let turn = await Battle.Start(junkpile, superhero);
     console.log("--------------------------------");
@@ -45,11 +49,42 @@ async function BattleDevelopment(superheroes){
 
     let AssaultTurn = 1;
 
+    /*******************************************
+                LOOP OF THE BATTLE
+    *******************************************/
    while( junkpile.HP >= 0 && superhero.HP >= 0 ){
-    console.log("----------------------------------")
+    /************************************************
+        IF IS TURN OF THE ERUDITE TO ENTER THE FIELD
+    ************************************************/
+    if(AssaultTurn === EruditoSpawn){
+
+        console.log("----------------------------------")
         console.log("Asalto numero " +  AssaultTurn)
+        console.log("-------------------------------------------------------")
+        console.log("-- EL ERUDITO HA APARECIDO EN EL CAMPO DE BATALLA -----")
+        console.log("-------------------------------------------------------")
+
+        erudito.ANG = EruditeActions.calculateAnger();
+
+        console.log(erudito);
+
+
+
+        //CALCULATE THE NEXT TIME THE ERUDITE IS GOING TO APEAR ON THE FIELD
+        EruditoSpawn = AssaultTurn + Math.floor(Math.random() * (5 - 3 + 1)) + 3 ;
+        AssaultTurn = AssaultTurn + 1;
+
+
+    /************************************************
+       NORMAL BATTLE DEVELOPMENT
+    ************************************************/
+    }else{
+        console.log("----------------------------------")
+        console.log("Asalto numero " +  AssaultTurn)
+
         let successfullAttack =  turn === 'superhero' ? Battle.SuccessfullAttack(superhero) : Battle.SuccessfullAttack(junkpile) ;
-       if(!successfullAttack){
+       
+        if(!successfullAttack){
         turn = turn === 'superhero' ? 'junkpile' : 'superhero';
         AssaultTurn = AssaultTurn + 1;
 
@@ -65,6 +100,9 @@ async function BattleDevelopment(superheroes){
 
             AssaultTurn = AssaultTurn + 1;
        }
+
+    }
+    
    }
 
 
@@ -89,66 +127,6 @@ function EndGame(fighters){
     }
         
 }
-
-
-/****************************************
-FUNCTION THAT SETS THE DATA FOR JUNKPILE 
-****************************************/
-function RetrieveJunkpile(superheroes){
-    const junkpileData = superheroes.find(superhero => superhero.name === "Junkpile");
-    
-    let hitpoints = 0;
-
-    if(parseInt(junkpileData.powerstats.strength * 10) > 666){
-        hitpoints = 666;
-    }else{
-        hitpoints = parseInt(junkpileData.powerstats.strength * 10);
-    }
-
-    const junkpile = new Superhero(
-        junkpileData.name,
-        junkpileData.powerstats.intelligence,
-        junkpileData.powerstats.strength,
-        junkpileData.powerstats.speed,
-        junkpileData.powerstats.durability,
-        junkpileData.powerstats.combat,
-        junkpileData.powerstats.power,
-        hitpoints
-    );
-    return junkpile;
-} 
-
-/**************************************************************************************
-FUNCTION THAT SETS THE DATA FOR THE SUPERHERO THAT IS GOING TO FIGHT JUNKPILE 
-**************************************************************************************/
-function RetrieveSuperhero(superheroes){
-    const randomHero = Math.floor(Math.random() * (((superheroes.length - 1) - 1 + 1)));
-    const superheroData = superheroes.find(superhero => superhero.id === randomHero);
-
-    let hitpoints = 0;
-
-    if(parseInt(superheroData.powerstats.strength * 10) > 666){
-        hitpoints = 666;
-    }else{
-        hitpoints = parseInt(superheroData.powerstats.strength * 10);
-    }
-    
-    if(superheroData.name != 'Junkpile'){
-        const superhero = new Superhero(
-            superheroData.name,
-            superheroData.powerstats.intelligence,
-            superheroData.powerstats.strength,
-            superheroData.powerstats.speed,
-            superheroData.powerstats.durability,
-            superheroData.powerstats.combat,
-            superheroData.powerstats.power,
-            hitpoints
-        );
-        return superhero;
-    }else{
-        RetrieveSuperhero(superheroes);
-    }
-} 
 
 module.exports = {
     StartGame,

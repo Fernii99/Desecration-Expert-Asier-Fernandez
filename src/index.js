@@ -2,20 +2,18 @@ const gameController = require('./gameController');
 
 async function start(){
     try{
+        console.log("WELCOME TO THE COMBAT ARENA !")
+        console.log(`---------------------------------------`)
 
-        console.log("Expert mode")
+        const superheroes = await gameController.StartGame();
 
-        // console.log("WELCOME TO THE COMBAT ARENA !")
-        // console.log(`---------------------------------------`)
+        console.log("LISTADO DE ATRIBUTOS");
+        console.log("----------------------------------------");
+        console.log(superheroes);
 
-        // const superheroes = await gameController.StartGame();
+        const fighters = await gameController.BattleDevelopment(superheroes);
+        await gameController.EndGame(fighters);
 
-        // console.log("LISTADO DE ATRIBUTOS");
-        // console.log("----------------------------------------");
-        // console.log(superheroes);
-
-        // const fighters = await gameController.BattleDevelopment(superheroes);
-        // await gameController.EndGame(fighters);
     }catch{
 
     }
